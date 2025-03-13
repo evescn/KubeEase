@@ -1,0 +1,32 @@
+name: "KubeEase"
+mode: "dev"
+port: 7000
+ws_port: 8082
+version: "v2.0.0"
+start_time: "2025-03-12"
+machine_id: 1
+pod_log_tail_line: 2000
+upload_path: ""
+
+log:
+  level: "debug"
+  filename: "log/KubeEase.log"
+  max_size: 200
+  max_age: 30
+  max_backups: 7
+
+kube_configs:
+  dev: "./config/dev-config"
+  tst: "./config/test-config"
+
+mysql:
+  db_type: mysql
+  host: "10.0.0.101"
+  port: 24858
+  user: "kubeEase"
+  password: "kubeEase123!@#"
+  dbname: "kubeEase"
+  log_mode: false
+  max_open_conns: 100  # 最大连接数
+  max_idle_conns: 10  # 最大空闲连接
+  max_life_time: 30 # 最大生存时间
