@@ -33,5 +33,5 @@ go.work.sum
 .env
 
 app
-build.sh
+*.sh
 log/
