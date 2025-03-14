@@ -41,7 +41,7 @@ func (n *namespace) GetNamespaces(client *kubernetes.Clientset, filterName strin
 		return nil, errors.New(fmt.Sprintf("获取 Namespace 列表失败, %v\n", err))
 	}
 	// 返回给客户端的名称空间
-	filterNamespaces := []string{"default", "traefik", "dev", "d1", "d2", "test", "t1", "t2", "t3"}
+	filterNamespaces := []string{"default", "devops", "dev", "d1", "d2", "test", "t1", "t2", "t3"}
 
 	// 创建一个 map 用于快速查找要返回的命名空间
 	filteredNamespaces := make(map[string]bool)
