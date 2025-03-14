@@ -48,7 +48,7 @@ func main() {
 
 	// 5. 注册雪花算法 ID 生成器
 	if err := snowflake.Init(settings.Conf.StartTime, settings.Conf.MachineID); err != nil {
-		fmt.Printf("init snowflake failed, err:%v\n", err)
+		zap.L().Error("init snowflake failed, err:%v\n", zap.Error(err))
 		return
 	}
 
