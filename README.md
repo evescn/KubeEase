@@ -21,8 +21,8 @@ $ git checkout master
 $ CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o app .
 
 # 打包 Docker 镜像
-$ docker build -t harbor.xxx.cn/devops/kubeease:v1.1 -f Dockerfile .
-$ docker push harbor.xxx.cn/devops/kubeease:v1.1
+$ docker build -t harbor.xxx.cn/devops/kube-ease:v1.1 -f Dockerfile .
+$ docker push harbor.xxx.cn/devops/kube-ease:v1.1
 ```
 
 > 方法2 打包 Docker 镜像
@@ -40,9 +40,9 @@ $ ./build.sh 1 dev # 版本号信息 环境
 ```shell
 $ docker run -d \
   --restart=always \
-  --name kubeease \
+  --name kube-ease \
   -p 8080:8080 \
-  harbor.xxx.cn/devops/kubeease:v1.1
+  harbor.xxx.cn/devops/kube-ease:v1.1
 ```
 
 ### b | Kubernetes 启动
@@ -52,31 +52,78 @@ $ docker run -d \
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kubeease
+  name: kube-ease
   namespace: devops
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: kubeease
+      app: kube-ease
   template:
     metadata:
       labels:
-        app: kubeease
+        app: kube-ease
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - kube-ease
+              topologyKey: kubernetes.io/hostname
+            weight: 100
       containers:
-      - name: kubeease
-        image: harbor.xxx.cn/devops/kubeease:v1.1
+      - name: kube-ease
+        image: harbor.xxx.cn/devops/kube-ease:v1.1
         imagePullPolicy: Always
         ports:
-        - containerPort: 8080
-
+        - containerPort: 7000
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          successThreshold: 1
+          tcpSocket:
+            port: 9000
+          timeoutSeconds: 10
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          successThreshold: 1
+          tcpSocket:
+            port: 9000
+          timeoutSeconds: 10
+        resources:
+          limits:
+            cpu: "2"
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        volumeMounts:
+        - mountPath: /app/log/
+          name: kube-ease-data
+        - mountPath: /etc/localtime
+          name: timezone
+      volumes:
+      - name: kube-ease-data
+        persistentVolumeClaim:
+          claimName: kube-ease-pvc
+      - hostPath:
+          path: /usr/share/zoneinfo/Asia/Shanghai
+          type: ""
+        name: timezone
 ---
 # service
 apiVersion: v1
 kind: Service
 metadata:
-  name: kubeease
+  name: kube-ease
   namespace: devops
 spec:
   ports:
@@ -91,8 +138,22 @@ spec:
     protocol: TCP
     targetPort: 8082
   selector:
-    app: kubeease
+    app: kube-ease
   type: NodePort
+---
+# jenkins.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kube-ease-pvc
+  namespace: devops
+spec:
+  storageClassName: nfs-client-storageclass
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests: 
+      storage: 50Gi   
 ```
 
 ```shell
