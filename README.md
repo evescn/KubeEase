@@ -41,7 +41,7 @@ $ ./build.sh 1 dev # 版本号信息 环境
 $ docker run -d \
   --restart=always \
   --name kube-ease \
-  -p 8080:8080 \
+  -p 7000:7000 \
   harbor.xxx.cn/devops/kube-ease:v1.1
 ```
 
