@@ -9,7 +9,7 @@ config/test-config
 config/config.dev.yaml
 config/config.uat.yaml
 config/config.prod.yaml
-build.sh
+
 *.exe
 *.exe~
 *.dll
@@ -33,5 +33,5 @@ go.work.sum
 .env
 
 app
-
+build.sh
 log/
