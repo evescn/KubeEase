@@ -66,8 +66,6 @@ func Init() (err error) {
 		env = "dev" // 默认为 dev
 	}
 
-	fmt.Println("env: ", env)
-
 	// 设置配置文件的名称和路径
 	viper.SetConfigName("config." + env) // 使用环境变量的值拼接配置文件名
 	viper.SetConfigType("yaml")          // 指定配置文件类型(专用于从远程获取配置信息时指定配置文件类型的)

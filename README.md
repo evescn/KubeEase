@@ -47,7 +47,7 @@ $ docker run -d \
 
 ### b | Kubernetes 启动
 
-```shell
+```yaml
 # k8s.yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -80,10 +80,16 @@ metadata:
   namespace: devops
 spec:
   ports:
-  - port: 80
+  - name: http
+    nodePort: 27000
+    port: 7000
     protocol: TCP
-    targetPort: 8080
-    nodePort: 30080
+    targetPort: 7000
+  - name: ws
+    nodePort: 28082
+    port: 8082
+    protocol: TCP
+    targetPort: 8082
   selector:
     app: kubeease
   type: NodePort
