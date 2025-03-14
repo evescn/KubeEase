@@ -88,7 +88,7 @@ spec:
           periodSeconds: 5
           successThreshold: 1
           tcpSocket:
-            port: 9000
+            port: 7000
           timeoutSeconds: 10
         readinessProbe:
           failureThreshold: 3
@@ -96,7 +96,7 @@ spec:
           periodSeconds: 5
           successThreshold: 1
           tcpSocket:
-            port: 9000
+            port: 7000
           timeoutSeconds: 10
         resources:
           limits:
